@@ -60,7 +60,7 @@ internal class MediaCodecCore {
         } catch (e: Exception) {
             e.printStackTrace()
             onRelease()
-            return Support("MediaDecode config: ${e.cause}", ret)
+            return Support("MediaDecode config: ${e.stackTraceToString()}", ret)
         }
         //2.encoding
         try {
@@ -136,7 +136,7 @@ internal class MediaCodecCore {
             onRelease()
         } catch (e: Exception) {
             e.printStackTrace()
-            return Support("MediaDecode release: ${e.message}", ret)
+            return Support("MediaDecode release: ${e.stackTraceToString()}", ret)
         }
         return Support("MediaDecode: end, out of loop", ret)
     }
