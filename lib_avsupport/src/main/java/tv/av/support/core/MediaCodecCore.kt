@@ -46,12 +46,12 @@ internal class MediaCodecCore {
                     mMediaCodec.configure(mediaFormat, surface, null, 0)
                 }
                 file.name.contains("265") -> {
-                    val mediaFormat = MediaFormat.createVideoFormat("video/hevc", 1920, 1080)
+                    val mediaFormat = MediaFormat.createVideoFormat("video/hevc", 1280, 720)
                     mMediaCodec = MediaCodec.createDecoderByType("video/hevc")
                     mMediaCodec.configure(mediaFormat, surface, null, 0)
                 }
                 file.name.contains("264") -> {
-                    val mediaFormat = MediaFormat.createVideoFormat("video/avc", 1920, 1080)
+                    val mediaFormat = MediaFormat.createVideoFormat("video/avc", 1280, 720)
                     mMediaCodec = MediaCodec.createDecoderByType("video/avc")
                     mMediaCodec.configure(mediaFormat, surface, null, 0)
                 }
@@ -76,7 +76,7 @@ internal class MediaCodecCore {
                 if (nextFrame == -1) {
                     break
                 }
-                //输入 如果DSP芯片的buffer全部被占用 返回-1, 超时10 * 1000 = 10毫秒 = 0.01秒
+                //输入 如果DSP芯片的buffer全部被占用返回-1, timeOutUs 超时10 * 1000 = 10毫秒 = 0.01秒, -1则无限等待
                 val inIndex: Int = mMediaCodec.dequeueInputBuffer((1 * 1000).toLong())
                 if (inIndex >= 0) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -144,13 +144,19 @@ internal class MediaCodecCore {
     private fun onRelease() {
         try {
             if (this::mMediaCodec.isInitialized && !mInterrupt) {
-                mInterrupt = true
                 mMediaCodec.stop()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        try {
+            if (this::mMediaCodec.isInitialized && !mInterrupt) {
                 mMediaCodec.release()
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        mInterrupt = true
     }
 
     private fun frameReceive264(bytes: ByteArray, start: Int, totalSize: Int): Int {
