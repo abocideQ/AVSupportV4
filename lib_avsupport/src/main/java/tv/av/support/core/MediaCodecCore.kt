@@ -77,7 +77,7 @@ internal class MediaCodecCore {
                     break
                 }
                 //输入 如果DSP芯片的buffer全部被占用返回-1, timeOutUs 超时10 * 1000 = 10毫秒 = 0.01秒, -1则无限等待
-                val inIndex: Int = mMediaCodec.dequeueInputBuffer((1 * 1000).toLong())
+                val inIndex: Int = mMediaCodec.dequeueInputBuffer((10 * 1000).toLong())
                 if (inIndex >= 0) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         val inBuffer = mMediaCodec.getInputBuffer(inIndex)
@@ -98,7 +98,7 @@ internal class MediaCodecCore {
                 while (!mInterrupt) {
                     val bufferInfo = MediaCodec.BufferInfo()
                     val outIndex =
-                        mMediaCodec.dequeueOutputBuffer(bufferInfo, (1 * 1000).toLong())
+                        mMediaCodec.dequeueOutputBuffer(bufferInfo, (10 * 1000).toLong())
                     when {
                         outIndex >= 0 -> {
                             ret = true
